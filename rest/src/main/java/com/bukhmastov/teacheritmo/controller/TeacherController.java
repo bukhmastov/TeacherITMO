@@ -2,6 +2,7 @@ package com.bukhmastov.teacheritmo.controller;
 
 import com.bukhmastov.teacheritmo.dict.EnSource;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
+import com.bukhmastov.teacheritmo.model.ResponseSuccess;
 import com.bukhmastov.teacheritmo.model.Teacher;
 import com.bukhmastov.teacheritmo.model.TeacherList;
 import com.bukhmastov.teacheritmo.service.TeacherService;
@@ -33,14 +34,14 @@ public class TeacherController extends BaseController {
 
     @PostMapping(path = "/teacher/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseEntity createReview(@RequestBody Teacher teacher) {
+    public ResponseEntity<ResponseSuccess> createReview(@RequestBody Teacher teacher) {
         log.debug("createReview(teacher={})", teacher);
         if (teacher == null) {
             throw new BadRequestException("Teacher not specified");
         }
         Response response = teacherService.createTeacher(teacher, EnSource.EXTERNAL);
         throwIfError(response);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return makeSuccessResponse(HttpStatus.CREATED);
     }
 
     @Autowired

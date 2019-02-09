@@ -22,4 +22,6 @@ public interface TeacherService {
     Response<Integer> updateTeachers(List<Teacher> teacherList, EnSource source);
 
     Response updateTeacher(Teacher teacher, EnSource source);
+
+    Response<Integer> countTeachers();
 }

@@ -16,6 +16,8 @@ import com.bukhmastov.teacheritmo.service.ReviewService;
 import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
@@ -26,17 +28,6 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 
 public class ReviewServiceImpl implements ReviewService {
-
-    @Autowired
-    ReviewDAO reviewDAO;
-    @Autowired
-    TeacherDAO teacherDAO;
-    @Autowired
-    ReviewLockDAO reviewLockDAO;
-    @Autowired
-    HttpServletRequest request;
-    @Autowired
-    AppConfig config;
 
     @Override
     public Response<ReviewList> reviewListForTeacher(Integer teacherExtId) {
@@ -78,6 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setCreated(new Timestamp(System.currentTimeMillis()));
         reviewDAO.createReview(review);
         reviewLockDAO.create(makeReviewLock(review.getTeacherExtId()));
+        logCreateAction(review.getTeacherExtId());
         return Response.ok();
     }
 
@@ -100,12 +92,17 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewLock;
     }
 
+    private void logCreateAction(Integer teacherExtId) {
+        String userIp = request.getRemoteAddr();
+        log.info("User with ip={} left review on the teacher={}", userIp, teacherExtId);
+    }
+
     private Response validateReview(Review review) {
         if (review == null) {
             return Response.error(new BadRequestException("Review not specified"));
         }
         if (review.getTeacherExtId() == null) {
-            return Response.error(new BadRequestException("Review.teacherExtId not specified"));
+            return Response.error(new BadRequestException("Review.teacherId not specified"));
         }
         if (isCriteriaInvalid(review.getCriteria1())) {
             return Response.error(new BadRequestException("Review.getCriteria1 is invalid: " + review.getCriteria1()));
@@ -155,6 +152,7 @@ public class ReviewServiceImpl implements ReviewService {
         reviewSummary.setCriteria5(criteria5.get());
         reviewSummary.setComments(comments);
         reviewSummary.setCommentsSize(comments.size());
+        reviewSummary.setTotal(reviews.size());
         return reviewSummary;
     }
 
@@ -172,4 +170,17 @@ public class ReviewServiceImpl implements ReviewService {
             return count == 0.0 ? null : sum / count;
         }
     }
+
+    @Autowired
+    ReviewDAO reviewDAO;
+    @Autowired
+    TeacherDAO teacherDAO;
+    @Autowired
+    ReviewLockDAO reviewLockDAO;
+    @Autowired
+    HttpServletRequest request;
+    @Autowired
+    AppConfig config;
+
+    private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
 }

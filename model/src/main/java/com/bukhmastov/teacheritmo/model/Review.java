@@ -15,10 +15,10 @@ import java.sql.Timestamp;
 )
 public class Review implements HasId, Serializable {
 
-    @JsonProperty("id")
+    @JsonIgnore
     private Long id;
 
-    @JsonProperty("teacherExtId")
+    @JsonProperty("teacherId")
     private Integer teacherExtId;
 
     @JsonProperty("comment")

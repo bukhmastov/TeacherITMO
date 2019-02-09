@@ -1,6 +1,6 @@
 package com.bukhmastov.teacheritmo.controller.error;
 
-import com.bukhmastov.teacheritmo.model.ErrorResponse;
+import com.bukhmastov.teacheritmo.model.ResponseError;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ public class ErrorController extends Base {
 
     @RequestMapping(path = "/error", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseEntity<ErrorResponse> handle(HttpServletRequest request) {
+    public ResponseEntity<ResponseError> handle(HttpServletRequest request) {
         int statusCode = (int) request.getAttribute(WebUtils.ERROR_STATUS_CODE_ATTRIBUTE);
         String reason = (String) request.getAttribute(WebUtils.ERROR_MESSAGE_ATTRIBUTE);
         return makeErrorResponse(HttpStatus.valueOf(statusCode), reason);

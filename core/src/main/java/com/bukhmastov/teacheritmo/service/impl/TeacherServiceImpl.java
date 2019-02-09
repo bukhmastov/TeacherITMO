@@ -11,15 +11,16 @@ import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.CollectionUtils;
 import com.bukhmastov.teacheritmo.util.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-public class TeacherServiceImpl implements TeacherService {
+import javax.servlet.http.HttpServletRequest;
 
-    @Autowired
-    TeacherDAO teacherDAO;
+public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public Response<TeacherList> findTeachers(String name) {
@@ -77,6 +78,9 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setSource(source);
         teacher.setCreated(new Timestamp(System.currentTimeMillis()));
         teacherDAO.createTeacher(teacher);
+        if (source == EnSource.EXTERNAL) {
+            logCreateAction(teacher);
+        }
         return Response.ok();
     }
 
@@ -106,13 +110,21 @@ public class TeacherServiceImpl implements TeacherService {
         }
 
         if (teacher.getId() == null) {
-            return Response.error(new BadRequestException("Teacher.id not specified"));
+            return Response.error(new BadRequestException("Teacher.id(internal) not specified"));
         }
 
         teacher.setSource(source);
         teacher.setCreated(new Timestamp(System.currentTimeMillis()));
         teacherDAO.updateTeacher(teacher);
+        if (source == EnSource.EXTERNAL) {
+            logUpdateAction(teacher);
+        }
         return Response.ok();
+    }
+
+    @Override
+    public Response<Integer> countTeachers() {
+        return Response.ok(teacherDAO.count());
     }
 
     private Response validateTeacher(Teacher teacher) {
@@ -120,7 +132,7 @@ public class TeacherServiceImpl implements TeacherService {
             return Response.error(new BadRequestException("Teacher not specified"));
         }
         if (teacher.getExtId() == null) {
-            return Response.error(new BadRequestException("Teacher.extId not specified"));
+            return Response.error(new BadRequestException("Teacher.id not specified"));
         }
         if (StringUtils.isBlank(teacher.getName())) {
             return Response.error(new BadRequestException("Teacher.name not specified"));
@@ -130,4 +142,21 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return null;
     }
+
+    private void logCreateAction(Teacher teacher) {
+        String userIp = request.getRemoteAddr();
+        log.info("User with ip={} created new teacher={}", userIp, teacher);
+    }
+
+    private void logUpdateAction(Teacher teacher) {
+        String userIp = request.getRemoteAddr();
+        log.info("User with ip={} updated the teacher={}", userIp, teacher);
+    }
+
+    @Autowired
+    TeacherDAO teacherDAO;
+    @Autowired
+    HttpServletRequest request;
+
+    private static final Logger log = LoggerFactory.getLogger(TeacherServiceImpl.class);
 }

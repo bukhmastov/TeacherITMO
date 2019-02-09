@@ -1,6 +1,7 @@
 package com.bukhmastov.teacheritmo.controller;
 
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
+import com.bukhmastov.teacheritmo.model.ResponseSuccess;
 import com.bukhmastov.teacheritmo.model.Review;
 import com.bukhmastov.teacheritmo.model.ReviewList;
 import com.bukhmastov.teacheritmo.model.ReviewSummary;
@@ -46,14 +47,14 @@ public class ReviewController extends BaseController {
 
     @PostMapping(path = "/review/create", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseEntity createReview(@RequestBody Review review) {
+    public ResponseEntity<ResponseSuccess> createReview(@RequestBody Review review) {
         log.debug("createReview(review={})", review);
         if (review == null) {
             throw new BadRequestException("Review not specified");
         }
         Response response = reviewService.createReview(review);
         throwIfError(response);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return makeSuccessResponse(HttpStatus.CREATED);
     }
 
     @Autowired

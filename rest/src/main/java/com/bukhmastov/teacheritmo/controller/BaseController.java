@@ -3,13 +3,23 @@ package com.bukhmastov.teacheritmo.controller;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
 import com.bukhmastov.teacheritmo.exception.HttpStatusException;
 import com.bukhmastov.teacheritmo.exception.InternalErrorException;
+import com.bukhmastov.teacheritmo.model.ResponseSuccess;
 import com.bukhmastov.teacheritmo.struct.Response;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ValueConstants;
 
 import java.util.Objects;
 
 abstract class BaseController {
+
+    protected ResponseEntity<ResponseSuccess> makeSuccessResponse(HttpStatus httpStatus) {
+        ResponseSuccess response = new ResponseSuccess();
+        response.setStatus(httpStatus.value());
+        response.setDescription(httpStatus.getReasonPhrase());
+        return new ResponseEntity<>(response, httpStatus);
+    }
 
     void throwIfError(Response response) {
         if (response.isOk()) {

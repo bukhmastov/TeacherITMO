@@ -1,7 +1,7 @@
 package com.bukhmastov.teacheritmo.mapper;
 
 import com.bukhmastov.teacheritmo.model.ReviewLock;
-import com.bukhmastov.teacheritmo.util.net.NetworkUtils;
+import com.bukhmastov.teacheritmo.util.NetworkUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,7 +29,7 @@ public class ReviewLockMapper extends BaseMapper<ReviewLock> {
     public List<Object> getFieldValues(ReviewLock entity) {
         List<Object> values = new ArrayList<>();
         values.add(entity.getId());
-        values.add(NetworkUtils.host2binary(entity.getIp()));
+        values.add(NetworkUtils.host2hex(entity.getIp()));
         values.add(entity.getTeacherExtId());
         values.add(entity.getCreated());
         return values;
@@ -39,7 +39,7 @@ public class ReviewLockMapper extends BaseMapper<ReviewLock> {
     public ReviewLock mapRow(ResultSet rs, int rowNum) throws SQLException {
         ReviewLock entity = new ReviewLock();
         entity.setId(getLong(rs, "id"));
-        entity.setIp(NetworkUtils.binary2host(getBytes(rs, "ip")));
+        entity.setIp(NetworkUtils.hex2host(getString(rs, "ip")));
         entity.setTeacherExtId(getInt(rs, "teacher_ext_id"));
         entity.setCreated(getTimestamp(rs, "created"));
         return entity;

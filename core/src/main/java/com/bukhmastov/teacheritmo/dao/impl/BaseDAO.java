@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class BaseDAO<T extends HasId> extends JdbcDaoSupport {
 
-    private final BaseMapper<T> mapper;
+    protected final BaseMapper<T> mapper;
 
     public BaseDAO(BaseMapper<T> mapper) {
         this.mapper = mapper;

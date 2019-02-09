@@ -55,11 +55,11 @@ public abstract class AbstractJob implements Runnable {
                 log.info("Cron expression not defined, job not started");
                 return;
             }
+            log.info("Job is about to {}", isFirstTime ? "start" : "restart");
             if (isShouldRunAtStartup()) {
                 scheduler.execute(this);
             }
             scheduledFuture = scheduler.schedule(this, new CronTrigger(currentCronExpression));
-            log.info("Job has been {}", isFirstTime ? "started" : "restarted");
         } catch (Throwable throwable) {
             log.error("Error occurred while job startup", throwable);
         }

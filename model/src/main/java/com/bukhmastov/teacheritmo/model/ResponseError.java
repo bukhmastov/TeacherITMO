@@ -3,32 +3,46 @@ package com.bukhmastov.teacheritmo.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
+
 @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
         setterVisibility = JsonAutoDetect.Visibility.NONE
 )
-public class ErrorResponse {
+public class ResponseError implements Serializable {
 
     @JsonProperty("status")
-    private String httpStatus;
+    private Integer status;
+
+    @JsonProperty("description")
+    private String description;
 
     @JsonProperty("reason")
     private String reason;
 
-    public ErrorResponse() {}
+    public ResponseError() {}
 
-    public ErrorResponse(String httpStatus, String reason) {
-        this.httpStatus = httpStatus;
+    public ResponseError(Integer status, String description, String reason) {
+        this.status = status;
+        this.description = description;
         this.reason = reason;
     }
 
-    public String getHttpStatus() {
-        return httpStatus;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setHttpStatus(String httpStatus) {
-        this.httpStatus = httpStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getReason() {
@@ -42,8 +56,9 @@ public class ErrorResponse {
     @Override
     public String toString() {
         return "ErrorResponse{" +
-                "httpStatus='" + httpStatus + '\'' +
+                "status=" + status +
                 ", reason='" + reason + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

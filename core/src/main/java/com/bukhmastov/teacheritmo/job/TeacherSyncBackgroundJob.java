@@ -103,7 +103,8 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
 
     @Override
     protected boolean isShouldRunAtStartup() {
-        return true;
+        Response<Integer> response = teacherService.countTeachers();
+        return response.isOk() && response.getData() == 0;
     }
 
     @Autowired

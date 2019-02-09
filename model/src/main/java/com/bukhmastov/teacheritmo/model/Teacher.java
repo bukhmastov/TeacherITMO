@@ -16,10 +16,10 @@ import java.sql.Timestamp;
 )
 public class Teacher implements HasId, Serializable {
 
-    @JsonProperty("id")
+    @JsonIgnore
     private Long id;
 
-    @JsonProperty("extId")
+    @JsonProperty("id")
     private Integer extId;
 
     @JsonProperty("name")

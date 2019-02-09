@@ -37,7 +37,6 @@ public abstract class AbstractFileReloadableConfig<T> extends AbstractReloadable
         if (!wasLoadedFirstTime) {
             log.debug("First loading {} ...", toString());
             load();
-            wasLoadedFirstTime = true;
             return true;
         }
         if (configFile == null && !locateAndSetFile()) {
@@ -87,6 +86,7 @@ public abstract class AbstractFileReloadableConfig<T> extends AbstractReloadable
             Reader reader = encoding != null ? new InputStreamReader(is, encoding) : new InputStreamReader(is, Charset.defaultCharset());
             lastModified = configFile != null ? configFile.lastModified() : null;
             setData(createConfigData(reader));
+            wasLoadedFirstTime = true;
             log.info("{} loaded successful from {}", toString(), configPath);
         } catch (IOException e) {
             throw new ConfigException(e);

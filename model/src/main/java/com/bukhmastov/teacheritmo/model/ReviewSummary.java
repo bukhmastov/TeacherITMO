@@ -37,6 +37,9 @@ public class ReviewSummary implements Serializable {
     @JsonProperty("commentsSize")
     private long commentsSize = 0;
 
+    @JsonProperty("total")
+    private long total = 0;
+
     public ReviewSummary() {}
 
     public Teacher getTeacher() {
@@ -103,6 +106,14 @@ public class ReviewSummary implements Serializable {
         this.commentsSize = commentsSize;
     }
 
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
     @Override
     public String toString() {
         return "ReviewSummary{" +
@@ -114,6 +125,7 @@ public class ReviewSummary implements Serializable {
                 ", criteria5=" + criteria5 +
                 ", comments=" + comments +
                 ", commentsSize=" + commentsSize +
+                ", total=" + total +
                 '}';
     }
 }

@@ -121,12 +121,4 @@ public abstract class BaseMapper<T> implements RowMapper<T> {
         }
         return value;
     }
-
-    protected byte[] getBytes(ResultSet rs, String columnLabel) throws SQLException {
-        byte[] value = rs.getBytes(columnLabel);
-        if (rs.wasNull()) {
-            value = null;
-        }
-        return value;
-    }
 }
