@@ -1,6 +1,6 @@
 package com.bukhmastov.teacheritmo.job;
 
-import com.bukhmastov.teacheritmo.config.TeacherItmoConfig;
+import com.bukhmastov.teacheritmo.config.AppConfig;
 import com.bukhmastov.teacheritmo.dict.EnSource;
 import com.bukhmastov.teacheritmo.model.Teacher;
 import com.bukhmastov.teacheritmo.model.itmo.ItmoTeacher;
@@ -8,38 +8,18 @@ import com.bukhmastov.teacheritmo.model.itmo.ItmoTeacherList;
 import com.bukhmastov.teacheritmo.service.TeacherService;
 import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.CollectionUtils;
-import com.bukhmastov.teacheritmo.util.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
-
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TeacherSyncBackgroundJob implements Runnable {
-
-    @PostConstruct
-    public void init() {
-        try {
-            String cron = config.data().getSchedulerCron();
-            if (StringUtils.isBlank(cron)) {
-                log.info("Teachers sync not enabled, teachers sync not started");
-                return;
-            }
-            scheduler.execute(this);
-            scheduler.schedule(this, new CronTrigger(cron));
-        } catch (Throwable throwable) {
-            log.error("Error occurred while teachers init", throwable);
-        }
-    }
+public class TeacherSyncBackgroundJob extends AbstractJob {
 
     @Override
     public void run() {
@@ -118,10 +98,23 @@ public class TeacherSyncBackgroundJob implements Runnable {
         return null;
     }
 
+    @Override
+    protected Logger getLogger() {
+        return log;
+    }
+
+    @Override
+    protected String getCronExpression() {
+        return config.data().getJobTeacherCron();
+    }
+
+    @Override
+    protected boolean isShouldRunAtStartup() {
+        return true;
+    }
+
     @Autowired
-    ThreadPoolTaskScheduler scheduler;
-    @Autowired
-    TeacherItmoConfig config;
+    AppConfig config;
     @Autowired
     TeacherService teacherService;
 

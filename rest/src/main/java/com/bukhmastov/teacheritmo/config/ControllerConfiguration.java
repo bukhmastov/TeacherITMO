@@ -1,4 +1,4 @@
-package com.bukhmastov.teacheritmo.factory;
+package com.bukhmastov.teacheritmo.config;
 
 import com.bukhmastov.teacheritmo.controller.ReviewController;
 import com.bukhmastov.teacheritmo.controller.TeacherController;
