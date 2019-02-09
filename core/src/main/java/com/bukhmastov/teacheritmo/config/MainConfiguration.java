@@ -23,8 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.web.client.RestTemplate;
+
+import java.nio.charset.StandardCharsets;
 
 import javax.sql.DataSource;
 
@@ -68,6 +72,13 @@ public class MainConfiguration {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(config.data().getJobThreadCount());
         return scheduler;
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(StandardCharsets.UTF_8));
+        return restTemplate;
     }
 
     //* DAO *//

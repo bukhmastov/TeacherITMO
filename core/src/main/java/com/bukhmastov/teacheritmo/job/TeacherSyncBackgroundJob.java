@@ -23,13 +23,12 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
     protected void execute() throws Throwable {
         log.info("Teachers sync has started");
         long timeStart = System.currentTimeMillis();
-        RestTemplate restTemplate = new RestTemplate();
-        loadTeachers(restTemplate, 0);
+        loadTeachers(0);
         long timeEnd = System.currentTimeMillis();
         log.info("Teachers sync has ended | exec time = {}ms", timeEnd - timeStart);
     }
 
-    private void loadTeachers(RestTemplate restTemplate, int offset) {
+    private void loadTeachers(int offset) {
         log.debug("Load teachers with offset={}", offset);
         ItmoTeacherList teacherList = restTemplate.getForObject(ITMO_API_URL + offset, ItmoTeacherList.class);
         if (teacherList == null) {
@@ -45,7 +44,7 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
         if (nextOffset > count) {
             return;
         }
-        loadTeachers(restTemplate, nextOffset);
+        loadTeachers(nextOffset);
     }
 
     private void proceedTeachers(List<ItmoTeacher> itmoTeacherList, int offset) {
@@ -111,6 +110,8 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
     AppConfig config;
     @Autowired
     TeacherService teacherService;
+    @Autowired
+    RestTemplate restTemplate;
 
     private static final String ITMO_API_URL = "http://mountain.ifmo.ru/api.ifmo.ru/public/v1/schedule_person?lastname=&offset=";
 }

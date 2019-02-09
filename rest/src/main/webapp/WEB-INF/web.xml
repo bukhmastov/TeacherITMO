@@ -12,6 +12,16 @@
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
 
+    <!-- Фильтр установки кодировок -->
+    <filter>
+        <filter-name>CharacterSetFilter</filter-name>
+        <filter-class>com.bukhmastov.teacheritmo.filter.CharacterSetFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterSetFilter</filter-name>
+        <url-pattern>/api/rest/*</url-pattern>
+    </filter-mapping>
+
     <!-- Сервлет для проброса запросов в RestController -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
