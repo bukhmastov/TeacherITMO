@@ -45,6 +45,16 @@ public abstract class BaseDAO<T extends HasId> extends JdbcDaoSupport {
         return getJdbcTemplateSafely().update(sql, params) == 1;
     }
 
+    protected int delete(String query, Object...params) {
+        String sql = mapper.makeDeleteSql(query);
+        return getJdbcTemplateSafely().update(sql, params);
+    }
+
+    protected int count(String query, Object...params) {
+        String sql = mapper.makeCountSql(query);
+        return getJdbcTemplateSafely().queryForObject(sql, params, Integer.class);
+    }
+
     protected JdbcTemplate getJdbcTemplateSafely() {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
         if (jdbcTemplate == null) {

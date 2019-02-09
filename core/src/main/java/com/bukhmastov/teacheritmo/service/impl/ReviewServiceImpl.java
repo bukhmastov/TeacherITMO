@@ -1,11 +1,15 @@
 package com.bukhmastov.teacheritmo.service.impl;
 
+import com.bukhmastov.teacheritmo.config.AppConfig;
 import com.bukhmastov.teacheritmo.dao.ReviewDAO;
+import com.bukhmastov.teacheritmo.dao.ReviewLockDAO;
 import com.bukhmastov.teacheritmo.dao.TeacherDAO;
 import com.bukhmastov.teacheritmo.exception.FailedDependencyException;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
+import com.bukhmastov.teacheritmo.exception.TooManyRequestsException;
 import com.bukhmastov.teacheritmo.model.Review;
 import com.bukhmastov.teacheritmo.model.ReviewList;
+import com.bukhmastov.teacheritmo.model.ReviewLock;
 import com.bukhmastov.teacheritmo.model.ReviewSummary;
 import com.bukhmastov.teacheritmo.model.Teacher;
 import com.bukhmastov.teacheritmo.service.ReviewService;
@@ -17,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ReviewServiceImpl implements ReviewService {
 
@@ -24,6 +31,12 @@ public class ReviewServiceImpl implements ReviewService {
     ReviewDAO reviewDAO;
     @Autowired
     TeacherDAO teacherDAO;
+    @Autowired
+    ReviewLockDAO reviewLockDAO;
+    @Autowired
+    HttpServletRequest request;
+    @Autowired
+    AppConfig config;
 
     @Override
     public Response<ReviewList> reviewListForTeacher(Integer teacherExtId) {
@@ -52,6 +65,10 @@ public class ReviewServiceImpl implements ReviewService {
             return response;
         }
 
+        if (isBlockedForTeacher(review.getTeacherExtId())) {
+            return Response.error(new TooManyRequestsException("Too many reviews for provided teacher"));
+        }
+
         Teacher teacher = teacherDAO.findTeacherByExtId(review.getTeacherExtId());
         if (teacher == null) {
             return Response.error(new FailedDependencyException("Teacher not exists"));
@@ -60,7 +77,27 @@ public class ReviewServiceImpl implements ReviewService {
         review.setId(null);
         review.setCreated(new Timestamp(System.currentTimeMillis()));
         reviewDAO.createReview(review);
+        reviewLockDAO.create(makeReviewLock(review.getTeacherExtId()));
         return Response.ok();
+    }
+
+    private boolean isBlockedForTeacher(Integer teacherExtId) {
+        if (config.data().getLockReviewHours() < 1) {
+            return false;
+        }
+        String userIp = request.getRemoteAddr();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(config.data().getLockReviewHours()));
+        int locks = reviewLockDAO.count(userIp, teacherExtId, timestamp);
+        return locks >= config.data().getLockReviewLimit();
+    }
+
+    private ReviewLock makeReviewLock(Integer teacherExtId) {
+        String userIp = request.getRemoteAddr();
+        ReviewLock reviewLock = new ReviewLock();
+        reviewLock.setIp(userIp);
+        reviewLock.setTeacherExtId(teacherExtId);
+        reviewLock.setCreated(new Timestamp(System.currentTimeMillis()));
+        return reviewLock;
     }
 
     private Response validateReview(Review review) {

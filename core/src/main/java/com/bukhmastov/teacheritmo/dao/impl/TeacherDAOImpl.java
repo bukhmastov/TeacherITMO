@@ -36,12 +36,12 @@ public class TeacherDAOImpl extends BaseDAO<Teacher> implements TeacherDAO {
 
     @Override
     public Teacher findTeacherByName(String name) {
-        return getByQuery("name = ?", name);
+        return getByQuery("name = '?'", name);
     }
 
     @Override
     public List<Teacher> findTeachers(String name) {
-        return listByQuery("name LIKE ?", "%" + name + "%");
+        return listByQuery("name LIKE '?'", "%" + name + "%");
     }
 
     @Override

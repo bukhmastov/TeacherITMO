@@ -58,10 +58,5 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${project.spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${project.servlet.version}</version>
-        </dependency>
     </dependencies>
 </project>

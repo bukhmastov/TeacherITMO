@@ -9,8 +9,6 @@ import com.bukhmastov.teacheritmo.service.TeacherService;
 import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.CollectionUtils;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,17 +20,13 @@ import java.util.stream.Collectors;
 public class TeacherSyncBackgroundJob extends AbstractJob {
 
     @Override
-    public void run() {
-        try {
-            log.info("Teachers sync has started");
-            long timeStart = System.currentTimeMillis();
-            RestTemplate restTemplate = new RestTemplate();
-            loadTeachers(restTemplate, 0);
-            long timeEnd = System.currentTimeMillis();
-            log.info("Teachers sync has ended | exec time = {}ms", timeEnd - timeStart);
-        } catch (Throwable throwable) {
-            log.error("Error occurred while teachers sync", throwable);
-        }
+    protected void execute() throws Throwable {
+        log.info("Teachers sync has started");
+        long timeStart = System.currentTimeMillis();
+        RestTemplate restTemplate = new RestTemplate();
+        loadTeachers(restTemplate, 0);
+        long timeEnd = System.currentTimeMillis();
+        log.info("Teachers sync has ended | exec time = {}ms", timeEnd - timeStart);
     }
 
     private void loadTeachers(RestTemplate restTemplate, int offset) {
@@ -99,8 +93,8 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
     }
 
     @Override
-    protected Logger getLogger() {
-        return log;
+    protected Class<? extends AbstractJob> getChildClass() {
+        return TeacherSyncBackgroundJob.class;
     }
 
     @Override
@@ -119,5 +113,4 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
     TeacherService teacherService;
 
     private static final String ITMO_API_URL = "http://mountain.ifmo.ru/api.ifmo.ru/public/v1/schedule_person?lastname=&offset=";
-    private static final Logger log = LoggerFactory.getLogger(TeacherSyncBackgroundJob.class);
 }

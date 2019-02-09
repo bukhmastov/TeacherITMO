@@ -13,6 +13,9 @@ public class AppConfigData {
         jobThreadCount = wrapper.getProperty("job.thread.count", Integer.class);
         jobTeacherCron = wrapper.getPropertyRequired("job.cron.teacher");
         jobConfigCron = wrapper.getPropertyRequired("job.cron.config");
+        jobLockAutoCleanerCron = wrapper.getPropertyRequired("job.cron.lock.cleaner");
+        lockReviewLimit = wrapper.getPropertyRequired("lock.review.limit", Integer.class);
+        lockReviewHours = wrapper.getPropertyRequired("lock.review.hours", Integer.class);
     }
 
     private final String jdbcDriver;
@@ -22,6 +25,9 @@ public class AppConfigData {
     private final Integer jobThreadCount;
     private final String jobTeacherCron;
     private final String jobConfigCron;
+    private final String jobLockAutoCleanerCron;
+    private final Integer lockReviewLimit;
+    private final Integer lockReviewHours;
 
     public String getJdbcDriver() {
         return jdbcDriver;
@@ -49,5 +55,17 @@ public class AppConfigData {
 
     public String getJobConfigCron() {
         return jobConfigCron;
+    }
+
+    public String getJobLockAutoCleanerCron() {
+        return jobLockAutoCleanerCron;
+    }
+
+    public Integer getLockReviewLimit() {
+        return lockReviewLimit;
+    }
+
+    public Integer getLockReviewHours() {
+        return lockReviewHours;
     }
 }

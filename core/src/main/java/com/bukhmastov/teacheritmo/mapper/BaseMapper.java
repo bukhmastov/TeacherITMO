@@ -18,6 +18,8 @@ public abstract class BaseMapper<T> implements RowMapper<T> {
 
     public abstract List<Object> getFieldValues(T entity);
 
+    public abstract T mapRow(ResultSet rs, int rowNum) throws SQLException;
+
     public String makeSelectSql(String where) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT");
@@ -66,6 +68,28 @@ public abstract class BaseMapper<T> implements RowMapper<T> {
         return sb.toString();
     }
 
+    public String makeDeleteSql(String where) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM ");
+        sb.append(getTableName());
+        if (StringUtils.isNotBlank(where)) {
+            sb.append(" WHERE ").append(where);
+        }
+        sb.append(";");
+        return sb.toString();
+    }
+
+    public String makeCountSql(String where) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT count(*) FROM ");
+        sb.append(getTableName());
+        if (StringUtils.isNotBlank(where)) {
+            sb.append(" WHERE ").append(where);
+        }
+        sb.append(";");
+        return sb.toString();
+    }
+
     protected Integer getInt(ResultSet rs, String columnLabel) throws SQLException {
         Integer value = rs.getInt(columnLabel);
         if (rs.wasNull()) {
@@ -92,6 +116,14 @@ public abstract class BaseMapper<T> implements RowMapper<T> {
 
     protected Timestamp getTimestamp(ResultSet rs, String columnLabel) throws SQLException {
         Timestamp value = rs.getTimestamp(columnLabel);
+        if (rs.wasNull()) {
+            value = null;
+        }
+        return value;
+    }
+
+    protected byte[] getBytes(ResultSet rs, String columnLabel) throws SQLException {
+        byte[] value = rs.getBytes(columnLabel);
         if (rs.wasNull()) {
             value = null;
         }
