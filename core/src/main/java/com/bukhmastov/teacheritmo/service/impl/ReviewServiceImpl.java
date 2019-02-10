@@ -13,6 +13,7 @@ import com.bukhmastov.teacheritmo.model.ReviewLock;
 import com.bukhmastov.teacheritmo.model.ReviewSummary;
 import com.bukhmastov.teacheritmo.model.Teacher;
 import com.bukhmastov.teacheritmo.service.ReviewService;
+import com.bukhmastov.teacheritmo.service.TeacherService;
 import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.StringUtils;
 
@@ -40,10 +41,11 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Response<ReviewSummary> reviewSummaryForTeacher(Integer teacherExtId) {
-        if (teacherExtId == null) {
-            return Response.error(new BadRequestException("TeacherExtId not specified"));
+        Response<Teacher> response = teacherService.findTeacher(teacherExtId);
+        if (response.isError()) {
+            return Response.error(response);
         }
-        Teacher teacher = teacherDAO.findTeacherByExtId(teacherExtId);
+        Teacher teacher = response.getData();
         List<Review> reviews = reviewDAO.findReviewsForTeacher(teacherExtId);
         ReviewSummary reviewSummary = makeReviewSummary(teacher, reviews);
         return Response.ok(reviewSummary);
@@ -171,6 +173,8 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
+    @Autowired
+    TeacherService teacherService;
     @Autowired
     ReviewDAO reviewDAO;
     @Autowired

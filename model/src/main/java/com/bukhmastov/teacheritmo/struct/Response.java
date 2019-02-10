@@ -6,22 +6,18 @@ public class Response<T> {
     private Throwable throwable;
     private T data;
 
-    public Response(Status status) {
+    private Response(Status status) {
         this.status = status;
     }
 
-    public Response(Status status, T data) {
+    private Response(Status status, T data) {
         this.status = status;
         this.data = data;
     }
 
-    public Response(Status status, Throwable throwable) {
+    private Response(Status status, Throwable throwable) {
         this.status = status;
         this.throwable = throwable;
-    }
-
-    public Status getStatus() {
-        return status;
     }
 
     public T getData() {
@@ -52,15 +48,20 @@ public class Response<T> {
         return new Response<>(Status.OK, data);
     }
 
-    public static <T> Response<T> error(Status status) {
-        return new Response<>(status);
-    }
-
     public static <T> Response<T> error(Throwable throwable) {
         return new Response<>(Status.ERROR, throwable);
     }
 
-    public static <T> Response<T> error(Status status, Throwable throwable) {
-        return new Response<>(status, throwable);
+    public static <T> Response<T> error(Response<?> response) {
+        return new Response<>(Status.ERROR, response.getException());
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "status=" + status +
+                ", data=" + data +
+                ", throwable=" + throwable +
+                '}';
     }
 }

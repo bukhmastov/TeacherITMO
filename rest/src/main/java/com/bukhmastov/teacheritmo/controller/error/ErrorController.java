@@ -20,6 +20,9 @@ public class ErrorController extends Base {
     public ResponseEntity<ResponseError> handle(HttpServletRequest request) {
         int statusCode = (int) request.getAttribute(WebUtils.ERROR_STATUS_CODE_ATTRIBUTE);
         String reason = (String) request.getAttribute(WebUtils.ERROR_MESSAGE_ATTRIBUTE);
-        return makeErrorResponse(HttpStatus.valueOf(statusCode), reason);
+        Throwable throwable = (Throwable) request.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE);
+        HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+        logAction(httpStatus, reason, throwable);
+        return makeErrorResponse(httpStatus, reason);
     }
 }

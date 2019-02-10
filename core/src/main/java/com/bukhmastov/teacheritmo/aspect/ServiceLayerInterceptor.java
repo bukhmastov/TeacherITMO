@@ -3,7 +3,6 @@ package com.bukhmastov.teacheritmo.aspect;
 import com.bukhmastov.teacheritmo.exception.HttpStatusException;
 import com.bukhmastov.teacheritmo.exception.InternalErrorException;
 import com.bukhmastov.teacheritmo.struct.Response;
-import com.bukhmastov.teacheritmo.struct.Status;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
@@ -30,21 +29,21 @@ public class ServiceLayerInterceptor {
         try {
             return pjp.proceed();
         } catch (Throwable throwable) {
-            return handleReturn(pjp.getSignature(), Status.ERROR, throwable);
+            return handleReturn(pjp.getSignature(), throwable);
         }
     }
 
-    private Object handleReturn(Signature signature, Status status, Throwable throwable) {
+    private Object handleReturn(Signature signature, Throwable throwable) {
         if (!(signature instanceof MethodSignature)) {
             return null;
         }
-        log.info("Caught uncaught exception | signature={} | status={} | throwable={}",
-                signature.getName(), status, throwable.toString());
+        log.info("Caught uncaught exception | signature={} | throwable={}",
+                signature.getName(), throwable.toString());
         if (Response.class.isAssignableFrom(((MethodSignature)signature).getReturnType())) {
             if (!(throwable instanceof HttpStatusException)) {
                 throwable = new InternalErrorException("Unexpected error occurred", throwable);
             }
-            return Response.error(status, throwable);
+            return Response.error(throwable);
         }
         return null;
     }

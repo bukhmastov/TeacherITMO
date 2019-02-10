@@ -1,50 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true" scan="true">
 
-    <property name="LOGS_ROOT" value="${catalina.home}/logs" />
+    <property name="LOGS_ROOT" value="${catalina.home}/logs/app" />
+    <property name="PATTERN" value="[%d][%-5p][%t][%-80m][%-10c{1}]%n" />
 
     <appender name="COMMON" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>false</prudent>
-        <encoder>
-            <pattern>[%d][%-5p][%t][%-80m][%-10c{1}]%n</pattern>
-        </encoder>
+        <encoder><pattern>${PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS_ROOT}/app_common_%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 1MB. -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- Keep no more than 1 months data. -->
-            <maxHistory>10</maxHistory>
-            <cleanHistoryOnStart>false</cleanHistoryOnStart>
+            <fileNamePattern>${LOGS_ROOT}/common-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="TRACE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>false</prudent>
-        <encoder>
-            <pattern>[%d][%-5p][%t][%-80m][%-10c{1}]%n</pattern>
-        </encoder>
+        <encoder><pattern>${PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS_ROOT}/app_trace_%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <!-- or whenever the file size reaches 1MB. -->
-                <maxFileSize>50MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- Keep no more than 1 months data. -->
+            <fileNamePattern>${LOGS_ROOT}/trace-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>10</maxHistory>
-            <cleanHistoryOnStart>false</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
 
-    <logger name="com.bukhmastov.teacheritmo" level="DEBUG" additivity="false">
+    <logger name="com.bukhmastov.teacheritmo" level="TRACE">
         <appender-ref ref="COMMON"/>
     </logger>
+    <logger name="org.eclipse.jetty.server.session" level="INFO"/>
+    <logger name="org.eclipse.jetty.servlet.ServletHandler" level="INFO"/>
 
-    <logger name="org.eclipse.jetty.server.session" level="info"/>
-    <logger name="org.eclipse.jetty.servlet.ServletHandler" level="info"/>
-
-    <root level="ALL">
+    <root level="TRACE">
         <appender-ref ref="TRACE"/>
     </root>
 </configuration>

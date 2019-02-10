@@ -3,6 +3,7 @@ package com.bukhmastov.teacheritmo.dao.impl;
 import com.bukhmastov.teacheritmo.mapper.BaseMapper;
 import com.bukhmastov.teacheritmo.marker.HasId;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -19,7 +20,11 @@ public abstract class BaseDAO<T extends HasId> extends JdbcDaoSupport {
 
     protected T getByQuery(String query, Object...params) {
         String sql = mapper.makeSelectSql(query);
-        return getJdbcTemplateSafely().queryForObject(sql, params, mapper);
+        try {
+            return getJdbcTemplateSafely().queryForObject(sql, params, mapper);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            return null;
+        }
     }
 
     protected List<T> listByQuery(String query, Object...params) {

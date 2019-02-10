@@ -26,4 +26,13 @@ public abstract class HttpStatusException extends RuntimeException {
     public String getReason() {
         return reason;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + "{" +
+                "message='" + getLocalizedMessage() + '\'' +
+                ", httpStatus='" + httpStatus + '\'' +
+                ", reason='" + reason + '\'' +
+                '}';
+    }
 }

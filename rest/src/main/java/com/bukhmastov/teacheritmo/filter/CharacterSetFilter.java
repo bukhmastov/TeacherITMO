@@ -1,7 +1,5 @@
 package com.bukhmastov.teacheritmo.filter;
 
-import org.springframework.http.MediaType;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
@@ -23,7 +21,6 @@ public class CharacterSetFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         request.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         chain.doFilter(request, response);
     }
