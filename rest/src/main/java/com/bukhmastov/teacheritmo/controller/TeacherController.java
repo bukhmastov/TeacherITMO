@@ -18,10 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class TeacherController extends BaseController {
 
     @GetMapping(path = "/teachers/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     public TeacherList getTeachers(@PathVariable("name") String name) {
         log.debug("getTeachers(name={})", name);
         if (StringUtils.isBlank(name)) {
@@ -33,7 +33,6 @@ public class TeacherController extends BaseController {
     }
 
     @PostMapping(path = "/teacher/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
     public ResponseEntity<ResponseSuccess> createReview(@RequestBody Teacher teacher) {
         log.debug("createReview(teacher={})", teacher);
         if (teacher == null) {

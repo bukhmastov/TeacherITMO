@@ -96,7 +96,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private void logCreateAction(Integer teacherExtId) {
         String userIp = request.getRemoteAddr();
-        log.info("User with ip={} left review on the teacher={}", userIp, teacherExtId);
+        String userAgent = request.getHeader("User-Agent");
+        log.trace("{} - [{}] - new review ({})", userIp, teacherExtId, userAgent);
     }
 
     private Response validateReview(Review review) {

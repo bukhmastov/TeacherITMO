@@ -2,13 +2,23 @@
 <configuration debug="true" scan="true">
 
     <property name="LOGS_ROOT" value="${catalina.home}/logs/app" />
-    <property name="PATTERN" value="[%d][%-5p][%t][%-80m][%-10c{1}]%n" />
+    <property name="PATTERN" value="[%d][%-5p][%t][%-10c{1}] - %m%n" />
+    <property name="PATTERN_SENSITIVE" value="%m%n" />
 
     <appender name="COMMON" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>false</prudent>
         <encoder><pattern>${PATTERN}</pattern></encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOGS_ROOT}/common-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="SENSITIVE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>false</prudent>
+        <encoder><pattern>${PATTERN_SENSITIVE}</pattern></encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_ROOT}/sensitive-%d{yyyy-MM-dd}.log.gz</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
@@ -22,8 +32,11 @@
         </rollingPolicy>
     </appender>
 
-    <logger name="com.bukhmastov.teacheritmo" level="TRACE">
+    <logger name="com.bukhmastov.teacheritmo" level="DEBUG">
         <appender-ref ref="COMMON"/>
+    </logger>
+    <logger name="com.bukhmastov.teacheritmo" level="TRACE">
+        <appender-ref ref="SENSITIVE"/>
     </logger>
     <logger name="org.eclipse.jetty.server.session" level="INFO"/>
     <logger name="org.eclipse.jetty.servlet.ServletHandler" level="INFO"/>

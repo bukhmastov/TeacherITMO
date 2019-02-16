@@ -74,6 +74,11 @@ public class TeacherServiceImpl implements TeacherService {
             return response;
         }
 
+        Teacher teacherF = teacherDAO.findTeacherByExtId(teacher.getExtId());
+        if (teacherF != null) {
+            return Response.error(new BadRequestException("Teacher with extId '" + teacher.getExtId() + "' already exists"));
+        }
+
         teacher.setId(null);
         teacher.setSource(source);
         teacher.setCreated(new Timestamp(System.currentTimeMillis()));
@@ -113,6 +118,11 @@ public class TeacherServiceImpl implements TeacherService {
             return Response.error(new BadRequestException("Teacher.id(internal) not specified"));
         }
 
+        Teacher teacherF = teacherDAO.findTeacherByExtId(teacher.getExtId());
+        if (teacherF == null) {
+            return Response.error(new BadRequestException("Teacher with extId '" + teacher.getExtId() + "' not exists"));
+        }
+
         teacher.setSource(source);
         teacher.setCreated(new Timestamp(System.currentTimeMillis()));
         teacherDAO.updateTeacher(teacher);
@@ -145,7 +155,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     private void logCreateAction(Teacher teacher) {
         String userIp = request.getRemoteAddr();
-        log.info("User with ip={} created new teacher={}", userIp, teacher);
+        String userAgent = request.getHeader("User-Agent");
+        log.trace("{} - [{}, {}, {}] - new teacher ({})",
+                userIp, teacher.getExtId(), teacher.getName(), teacher.getPost(), userAgent);
     }
 
     private void logUpdateAction(Teacher teacher) {

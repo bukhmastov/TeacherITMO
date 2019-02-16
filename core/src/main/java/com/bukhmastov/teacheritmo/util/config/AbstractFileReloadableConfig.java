@@ -42,8 +42,8 @@ public abstract class AbstractFileReloadableConfig<T> extends AbstractReloadable
         if (configFile == null && !locateAndSetFile()) {
             return false;
         }
-        log.debug("Check checkAndReload {} ...", toString());
         if (lastModified == null || configFile.lastModified() != lastModified) {
+            log.debug("Reloading {} ...", toString());
             load();
             return true;
         }
@@ -71,7 +71,7 @@ public abstract class AbstractFileReloadableConfig<T> extends AbstractReloadable
     private void firstFileCheckLocation() {
         if (!locateAndSetFile()) {
             if (configPath == null) {
-                log.warn("{} - no file at {}, default invocation", toString(), sourcePath);
+                log.warn("{} - no file at {}", toString(), sourcePath);
             }
         }
     }
