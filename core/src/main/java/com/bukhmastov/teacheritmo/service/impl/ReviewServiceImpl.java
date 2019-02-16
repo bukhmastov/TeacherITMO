@@ -100,7 +100,7 @@ public class ReviewServiceImpl implements ReviewService {
     private void logCreateAction(Integer teacherExtId) {
         String userIp = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
-        log.trace("{} - [{}] - new review ({})", userIp, teacherExtId, userAgent);
+        sensitiveLog.info("new review - [{}] - [{}] - [{}]", userIp, teacherExtId, userAgent);
     }
 
     private Response validateReview(Review review) {
@@ -191,4 +191,5 @@ public class ReviewServiceImpl implements ReviewService {
     AppConfig config;
 
     private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
+    private static final Logger sensitiveLog = LoggerFactory.getLogger("com.bukhmastov.teacheritmo--sensitive");
 }

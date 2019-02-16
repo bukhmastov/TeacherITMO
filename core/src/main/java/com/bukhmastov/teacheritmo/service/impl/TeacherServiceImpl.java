@@ -189,14 +189,14 @@ public class TeacherServiceImpl implements TeacherService {
     private void logCreateAction(Teacher teacher) {
         String userIp = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
-        log.trace("{} - [{}, {}, {}] - new teacher ({})",
+        sensitiveLog.info("new teacher - [{}] - [{}, {}, {}] - [{}]",
                 userIp, teacher.getExtId(), teacher.getName(), teacher.getPost(), userAgent);
     }
 
     private void logUpdateAction(Teacher teacher) {
         String userIp = request.getRemoteAddr();
         String userAgent = request.getHeader("User-Agent");
-        log.trace("{} - [{}, {}, {}] - update teacher ({})",
+        sensitiveLog.info("update teacher - [{}] - [{}, {}, {}] - [{}]",
                 userIp, teacher.getExtId(), teacher.getName(), teacher.getPost(), userAgent);
     }
 
@@ -210,4 +210,5 @@ public class TeacherServiceImpl implements TeacherService {
     AppConfig config;
 
     private static final Logger log = LoggerFactory.getLogger(TeacherServiceImpl.class);
+    private static final Logger sensitiveLog = LoggerFactory.getLogger("com.bukhmastov.teacheritmo--sensitive");
 }

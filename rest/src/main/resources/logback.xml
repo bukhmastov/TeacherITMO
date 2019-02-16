@@ -35,7 +35,7 @@
     <logger name="com.bukhmastov.teacheritmo" level="DEBUG">
         <appender-ref ref="COMMON"/>
     </logger>
-    <logger name="com.bukhmastov.teacheritmo" level="TRACE">
+    <logger name="com.bukhmastov.teacheritmo--sensitive" level="TRACE">
         <appender-ref ref="SENSITIVE"/>
     </logger>
     <logger name="org.eclipse.jetty.server.session" level="INFO"/>
