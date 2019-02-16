@@ -4,14 +4,17 @@ import com.bukhmastov.teacheritmo.Application;
 import com.bukhmastov.teacheritmo.dao.ReviewDAO;
 import com.bukhmastov.teacheritmo.dao.ReviewLockDAO;
 import com.bukhmastov.teacheritmo.dao.TeacherDAO;
+import com.bukhmastov.teacheritmo.dao.TeacherLockDAO;
 import com.bukhmastov.teacheritmo.dao.impl.ReviewDAOImpl;
 import com.bukhmastov.teacheritmo.dao.impl.ReviewLockDAOImpl;
 import com.bukhmastov.teacheritmo.dao.impl.TeacherDAOImpl;
+import com.bukhmastov.teacheritmo.dao.impl.TeacherLockDAOImpl;
 import com.bukhmastov.teacheritmo.job.ConfigReloadJob;
 import com.bukhmastov.teacheritmo.job.LockAutoCleanerJob;
 import com.bukhmastov.teacheritmo.job.TeacherSyncBackgroundJob;
 import com.bukhmastov.teacheritmo.mapper.ReviewLockMapper;
 import com.bukhmastov.teacheritmo.mapper.ReviewMapper;
+import com.bukhmastov.teacheritmo.mapper.TeacherLockMapper;
 import com.bukhmastov.teacheritmo.mapper.TeacherMapper;
 import com.bukhmastov.teacheritmo.service.ReviewService;
 import com.bukhmastov.teacheritmo.service.TeacherService;
@@ -98,6 +101,11 @@ public class MainConfiguration {
         return new ReviewLockDAOImpl(mapper);
     }
 
+    @Bean
+    public TeacherLockDAO getTeacherLockDAO(@Autowired TeacherLockMapper mapper) {
+        return new TeacherLockDAOImpl(mapper);
+    }
+
     //* Mapper *//
 
     @Bean
@@ -113,6 +121,11 @@ public class MainConfiguration {
     @Bean
     public ReviewLockMapper getReviewLockMapper() {
         return new ReviewLockMapper();
+    }
+
+    @Bean
+    public TeacherLockMapper getTeacherLockMapper() {
+        return new TeacherLockMapper();
     }
 
     //* Service *//

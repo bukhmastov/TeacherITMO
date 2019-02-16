@@ -70,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setId(null);
         review.setCreated(new Timestamp(System.currentTimeMillis()));
         reviewDAO.createReview(review);
-        reviewLockDAO.create(makeReviewLock(review.getTeacherExtId()));
+        createReviewLock(review.getTeacherExtId());
         logCreateAction(review.getTeacherExtId());
         return Response.ok();
     }
@@ -85,13 +85,16 @@ public class ReviewServiceImpl implements ReviewService {
         return locks >= config.data().getLockReviewLimit();
     }
 
-    private ReviewLock makeReviewLock(Integer teacherExtId) {
+    private void createReviewLock(Integer teacherExtId) {
+        if (config.data().getLockReviewHours() < 1) {
+            return;
+        }
         String userIp = request.getRemoteAddr();
-        ReviewLock reviewLock = new ReviewLock();
-        reviewLock.setIp(userIp);
-        reviewLock.setTeacherExtId(teacherExtId);
-        reviewLock.setCreated(new Timestamp(System.currentTimeMillis()));
-        return reviewLock;
+        ReviewLock lock = new ReviewLock();
+        lock.setIp(userIp);
+        lock.setTeacherExtId(teacherExtId);
+        lock.setCreated(new Timestamp(System.currentTimeMillis()));
+        reviewLockDAO.create(lock);
     }
 
     private void logCreateAction(Integer teacherExtId) {

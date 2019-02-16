@@ -238,13 +238,13 @@ const review = {
         });
         $("#teacher").html(name + " (" + pid + ")");
         $(".star").hover(function() {
-            let star = parseInt($(this).attr("star"));
+            let star = parseInt($(this).attr("data-star"));
             let parent = $(this).parent();
             for (let i = 0; i < 6; i++) {
                 parent.removeClass("stars-" + i);
             }
             parent.addClass("stars-" + star);
-            parent.attr("star", star);
+            parent.attr("data-star", star);
         });
         $("#create").click(() => {
             review.create(pid);
@@ -256,11 +256,11 @@ const review = {
         });
     },
     create: (pid) => {
-        let criteria1 = parseInt($("#criteria1").attr("star"));
-        let criteria2 = parseInt($("#criteria2").attr("star"));
-        let criteria3 = parseInt($("#criteria3").attr("star"));
-        let criteria4 = parseInt($("#criteria4").attr("star"));
-        let criteria5 = parseInt($("#criteria5").attr("star"));
+        let criteria1 = parseInt($("#criteria1").attr("data-star"));
+        let criteria2 = parseInt($("#criteria2").attr("data-star"));
+        let criteria3 = parseInt($("#criteria3").attr("data-star"));
+        let criteria4 = parseInt($("#criteria4").attr("data-star"));
+        let criteria5 = parseInt($("#criteria5").attr("data-star"));
         let comment = $("#comment").val();
         if (util.isEmpty(comment)) {
             comment = null;

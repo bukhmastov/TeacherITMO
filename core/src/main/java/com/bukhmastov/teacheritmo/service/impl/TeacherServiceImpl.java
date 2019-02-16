@@ -1,11 +1,15 @@
 package com.bukhmastov.teacheritmo.service.impl;
 
+import com.bukhmastov.teacheritmo.config.AppConfig;
 import com.bukhmastov.teacheritmo.dao.TeacherDAO;
+import com.bukhmastov.teacheritmo.dao.TeacherLockDAO;
 import com.bukhmastov.teacheritmo.dict.EnSource;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
 import com.bukhmastov.teacheritmo.exception.NotFoundException;
+import com.bukhmastov.teacheritmo.exception.TooManyRequestsException;
 import com.bukhmastov.teacheritmo.model.Teacher;
 import com.bukhmastov.teacheritmo.model.TeacherList;
+import com.bukhmastov.teacheritmo.model.TeacherLock;
 import com.bukhmastov.teacheritmo.service.TeacherService;
 import com.bukhmastov.teacheritmo.struct.Response;
 import com.bukhmastov.teacheritmo.util.CollectionUtils;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -74,9 +79,15 @@ public class TeacherServiceImpl implements TeacherService {
             return response;
         }
 
+        if (isBlocked()) {
+            return Response.error(new TooManyRequestsException("Too many requests for teacher create action. " +
+                    "Retry in " + config.data().getLockTeacherHours() + " hours."));
+        }
+
         Teacher teacherF = teacherDAO.findTeacherByExtId(teacher.getExtId());
         if (teacherF != null) {
-            return Response.error(new BadRequestException("Teacher with extId '" + teacher.getExtId() + "' already exists"));
+            return Response.error(new BadRequestException("Teacher with extId '" + teacher.getExtId() +
+                    "' already exists: '" + teacherF.getName() + "'"));
         }
 
         teacher.setId(null);
@@ -84,6 +95,7 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setCreated(new Timestamp(System.currentTimeMillis()));
         teacherDAO.createTeacher(teacher);
         if (source == EnSource.EXTERNAL) {
+            createTeacherLock();
             logCreateAction(teacher);
         }
         return Response.ok();
@@ -137,6 +149,27 @@ public class TeacherServiceImpl implements TeacherService {
         return Response.ok(teacherDAO.count());
     }
 
+    private boolean isBlocked() {
+        if (config.data().getLockTeacherHours() < 1) {
+            return false;
+        }
+        String userIp = request.getRemoteAddr();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(config.data().getLockTeacherHours()));
+        int locks = teacherLockDAO.count(userIp, timestamp);
+        return locks >= config.data().getLockTeacherLimit();
+    }
+
+    private void createTeacherLock() {
+        if (config.data().getLockTeacherHours() < 1) {
+            return;
+        }
+        String userIp = request.getRemoteAddr();
+        TeacherLock lock = new TeacherLock();
+        lock.setIp(userIp);
+        lock.setCreated(new Timestamp(System.currentTimeMillis()));
+        teacherLockDAO.create(lock);
+    }
+
     private Response validateTeacher(Teacher teacher) {
         if (teacher == null) {
             return Response.error(new BadRequestException("Teacher not specified"));
@@ -162,13 +195,19 @@ public class TeacherServiceImpl implements TeacherService {
 
     private void logUpdateAction(Teacher teacher) {
         String userIp = request.getRemoteAddr();
-        log.info("User with ip={} updated the teacher={}", userIp, teacher);
+        String userAgent = request.getHeader("User-Agent");
+        log.trace("{} - [{}, {}, {}] - update teacher ({})",
+                userIp, teacher.getExtId(), teacher.getName(), teacher.getPost(), userAgent);
     }
 
     @Autowired
     TeacherDAO teacherDAO;
     @Autowired
+    TeacherLockDAO teacherLockDAO;
+    @Autowired
     HttpServletRequest request;
+    @Autowired
+    AppConfig config;
 
     private static final Logger log = LoggerFactory.getLogger(TeacherServiceImpl.class);
 }

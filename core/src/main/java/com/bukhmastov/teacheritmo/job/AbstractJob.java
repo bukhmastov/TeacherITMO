@@ -35,16 +35,16 @@ public abstract class AbstractJob implements Runnable {
             isRunningJob = true;
             try {
                 execute();
-            } catch (Throwable throwable) {
-                log.error("Failed to execute job", throwable);
+            } catch (Exception exception) {
+                log.error("Failed to execute job", exception);
             }
             isRunningJob = false;
             if (isRestartJobOnFinish) {
                 isRestartJobOnFinish = false;
                 restart();
             }
-        } catch (Throwable throwable) {
-            log.error("Failed to execute inner job", throwable);
+        } catch (Exception exception) {
+            log.error("Failed to execute inner job", exception);
         }
     }
 
@@ -60,8 +60,8 @@ public abstract class AbstractJob implements Runnable {
                 scheduler.execute(this);
             }
             scheduledFuture = scheduler.schedule(this, new CronTrigger(currentCronExpression));
-        } catch (Throwable throwable) {
-            log.error("Error occurred while job startup", throwable);
+        } catch (Exception exception) {
+            log.error("Error occurred while job startup", exception);
         }
     }
 
@@ -74,9 +74,7 @@ public abstract class AbstractJob implements Runnable {
         }
     }
 
-    protected abstract void execute() throws Throwable;
-
-    protected abstract Class<? extends AbstractJob> getChildClass();
+    protected abstract void execute() throws Exception;
 
     protected abstract String getCronExpression();
 
@@ -92,5 +90,5 @@ public abstract class AbstractJob implements Runnable {
     private boolean isRunningJob = false;
     private boolean isRestartJobOnFinish = false;
 
-    protected final Logger log = LoggerFactory.getLogger(getChildClass());
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 }

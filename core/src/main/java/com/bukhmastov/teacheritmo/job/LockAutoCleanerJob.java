@@ -2,6 +2,7 @@ package com.bukhmastov.teacheritmo.job;
 
 import com.bukhmastov.teacheritmo.config.AppConfig;
 import com.bukhmastov.teacheritmo.dao.ReviewLockDAO;
+import com.bukhmastov.teacheritmo.dao.TeacherLockDAO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +12,12 @@ import java.util.concurrent.TimeUnit;
 public class LockAutoCleanerJob extends AbstractJob {
 
     @Override
-    protected void execute() throws Throwable {
+    protected void execute() throws Exception {
+        clearReviewLocks();
+        clearTeacherLocks();
+    }
+
+    private void clearReviewLocks() {
         if (config.data().getLockReviewHours() < 1) {
             return;
         }
@@ -22,9 +28,15 @@ public class LockAutoCleanerJob extends AbstractJob {
         }
     }
 
-    @Override
-    protected Class<? extends AbstractJob> getChildClass() {
-        return LockAutoCleanerJob.class;
+    private void clearTeacherLocks() {
+        if (config.data().getLockTeacherHours() < 1) {
+            return;
+        }
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(config.data().getLockTeacherHours()));
+        int count = teacherLockDAO.removeBeforeDate(timestamp);
+        if (count > 0) {
+            log.debug("Removed {} outdated teacher locks", count);
+        }
     }
 
     @Override
@@ -36,4 +48,6 @@ public class LockAutoCleanerJob extends AbstractJob {
     AppConfig config;
     @Autowired
     ReviewLockDAO reviewLockDAO;
+    @Autowired
+    TeacherLockDAO teacherLockDAO;
 }

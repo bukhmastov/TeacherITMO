@@ -6,5 +6,6 @@
 
     <include file="2019.02.03-init.xml" relativeToChangelogFile="true"/>
     <include file="2019.02.09-create-review-lock-table.xml" relativeToChangelogFile="true"/>
+    <include file="2019.02.16-create-teacher-lock-table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

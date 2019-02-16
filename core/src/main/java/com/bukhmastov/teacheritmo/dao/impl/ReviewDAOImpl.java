@@ -6,7 +6,6 @@ import com.bukhmastov.teacheritmo.model.Review;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.sql.DataSource;

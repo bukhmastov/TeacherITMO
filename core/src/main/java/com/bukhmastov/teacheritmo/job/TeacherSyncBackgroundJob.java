@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class TeacherSyncBackgroundJob extends AbstractJob {
 
     @Override
-    protected void execute() throws Throwable {
+    protected void execute() throws Exception {
         log.info("Teachers sync has started");
         long timeStart = System.currentTimeMillis();
         loadTeachers(0);
@@ -89,11 +89,6 @@ public class TeacherSyncBackgroundJob extends AbstractJob {
             }
         }
         return null;
-    }
-
-    @Override
-    protected Class<? extends AbstractJob> getChildClass() {
-        return TeacherSyncBackgroundJob.class;
     }
 
     @Override
