@@ -1,7 +1,7 @@
 package com.bukhmastov.teacheritmo.config;
 
-import com.bukhmastov.teacheritmo.controller.ReviewController;
-import com.bukhmastov.teacheritmo.controller.TeacherController;
+import com.bukhmastov.teacheritmo.controller.v1.ReviewController;
+import com.bukhmastov.teacheritmo.controller.v1.TeacherController;
 import com.bukhmastov.teacheritmo.controller.error.AdviceController;
 import com.bukhmastov.teacheritmo.controller.error.ErrorController;
 

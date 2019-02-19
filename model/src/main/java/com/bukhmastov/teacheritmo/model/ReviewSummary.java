@@ -17,28 +17,25 @@ public class ReviewSummary implements Serializable {
     private Teacher teacher;
 
     @JsonProperty("criteria1")
-    private Double criteria1;
+    private ReviewCriteria criteria1;
 
     @JsonProperty("criteria2")
-    private Double criteria2;
+    private ReviewCriteria criteria2;
 
     @JsonProperty("criteria3")
-    private Double criteria3;
+    private ReviewCriteria criteria3;
 
     @JsonProperty("criteria4")
-    private Double criteria4;
+    private ReviewCriteria criteria4;
 
     @JsonProperty("criteria5")
-    private Double criteria5;
+    private ReviewCriteria criteria5;
 
     @JsonProperty("comments")
     private List<String> comments;
 
     @JsonProperty("commentsSize")
     private long commentsSize = 0;
-
-    @JsonProperty("total")
-    private long total = 0;
 
     public ReviewSummary() {}
 
@@ -50,43 +47,43 @@ public class ReviewSummary implements Serializable {
         this.teacher = teacher;
     }
 
-    public Double getCriteria1() {
+    public ReviewCriteria getCriteria1() {
         return criteria1;
     }
 
-    public void setCriteria1(Double criteria1) {
+    public void setCriteria1(ReviewCriteria criteria1) {
         this.criteria1 = criteria1;
     }
 
-    public Double getCriteria2() {
+    public ReviewCriteria getCriteria2() {
         return criteria2;
     }
 
-    public void setCriteria2(Double criteria2) {
+    public void setCriteria2(ReviewCriteria criteria2) {
         this.criteria2 = criteria2;
     }
 
-    public Double getCriteria3() {
+    public ReviewCriteria getCriteria3() {
         return criteria3;
     }
 
-    public void setCriteria3(Double criteria3) {
+    public void setCriteria3(ReviewCriteria criteria3) {
         this.criteria3 = criteria3;
     }
 
-    public Double getCriteria4() {
+    public ReviewCriteria getCriteria4() {
         return criteria4;
     }
 
-    public void setCriteria4(Double criteria4) {
+    public void setCriteria4(ReviewCriteria criteria4) {
         this.criteria4 = criteria4;
     }
 
-    public Double getCriteria5() {
+    public ReviewCriteria getCriteria5() {
         return criteria5;
     }
 
-    public void setCriteria5(Double criteria5) {
+    public void setCriteria5(ReviewCriteria criteria5) {
         this.criteria5 = criteria5;
     }
 
@@ -106,14 +103,6 @@ public class ReviewSummary implements Serializable {
         this.commentsSize = commentsSize;
     }
 
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
     @Override
     public String toString() {
         return "ReviewSummary{" +
@@ -125,7 +114,6 @@ public class ReviewSummary implements Serializable {
                 ", criteria5=" + criteria5 +
                 ", comments=" + comments +
                 ", commentsSize=" + commentsSize +
-                ", total=" + total +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-const API_URL = "http://138.68.75.157/teacheritmo/api/rest/";
+const API_URL = "http://138.68.75.157/teacheritmo/api/rest/v1/";
 
 /**
  * Склепано на скорую руку и без души, 0 вопросов
@@ -200,23 +200,25 @@ const reviews = {
         reviews.pid = data.teacher.id;
         reviews.name = data.teacher.name;
         $("#teacher").html(data.teacher.name + " (" + data.teacher.id + ")");
-        $("#criteria1val").html(reviews.parse(data.criteria1));
-        $("#criteria1progress").attr("style", "width: " + (parseFloat(data.criteria1) * 20) + "%");
-        $("#criteria2val").html(reviews.parse(data.criteria2));
-        $("#criteria2progress").attr("style", "width: " + (parseFloat(data.criteria2) * 20) + "%");
-        $("#criteria3val").html(reviews.parse(data.criteria3));
-        $("#criteria3progress").attr("style", "width: " + (parseFloat(data.criteria3) * 20) + "%");
-        $("#criteria4val").html(reviews.parse(data.criteria4));
-        $("#criteria4progress").attr("style", "width: " + (parseFloat(data.criteria4) * 20) + "%");
-        $("#criteria5val").html(reviews.parse(data.criteria5));
-        $("#criteria5progress").attr("style", "width: " + (parseFloat(data.criteria5) * 20) + "%");
+        reviews.setCriteria(1, data.criteria1);
+        reviews.setCriteria(2, data.criteria2);
+        reviews.setCriteria(3, data.criteria3);
+        reviews.setCriteria(4, data.criteria4);
+        reviews.setCriteria(5, data.criteria5);
         let comments = "";
         for (let i = 0; i < data.commentsSize; i++) {
             let comment = data.comments[i];
+            if (util.isEmpty(comment)) {
+                continue;
+            }
             comments += "<div class='comment m-b-10'>" + comment + "</div>";
         }
         $("#comments").html(comments);
-        $("#review-count").html(util.isInt(data.total) ? data.total : 0);
+        $("#review-count").html(util.isInt(data.criteria1.total) ? data.criteria1.total : 0);
+    },
+    setCriteria: (num, criteria) => {
+        $("#criteria" + num + "val").html(reviews.parse(criteria.value));
+        $("#criteria" + num + "progress").attr("style", "width: " + (parseFloat(criteria.value) * 20) + "%");
     },
     parse: (number) => {
         let fl = parseFloat(number);

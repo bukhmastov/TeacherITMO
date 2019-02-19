@@ -1,5 +1,6 @@
-package com.bukhmastov.teacheritmo.controller;
+package com.bukhmastov.teacheritmo.controller.v1;
 
+import com.bukhmastov.teacheritmo.controller.BaseController;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
 import com.bukhmastov.teacheritmo.model.ResponseSuccess;
 import com.bukhmastov.teacheritmo.model.Review;
@@ -21,10 +22,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/v1")
 public class ReviewController extends BaseController {
 
     @GetMapping(path = "/reviews/{pid}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

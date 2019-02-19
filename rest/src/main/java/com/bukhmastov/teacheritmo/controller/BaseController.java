@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ValueConstants;
 
 import java.util.Objects;
 
-abstract class BaseController {
+public abstract class BaseController {
 
     protected ResponseEntity<ResponseSuccess> makeSuccessResponse(HttpStatus httpStatus) {
         ResponseSuccess response = new ResponseSuccess();
@@ -21,7 +21,7 @@ abstract class BaseController {
         return new ResponseEntity<>(response, httpStatus);
     }
 
-    void throwIfError(Response response) {
+    protected void throwIfError(Response response) {
         if (response.isOk()) {
             return;
         }
@@ -34,7 +34,7 @@ abstract class BaseController {
         throw new InternalErrorException("Failed to proceed request", response.getException());
     }
 
-    int string2int(String string, String field) {
+    protected int string2int(String string, String field) {
         if (string == null || Objects.equals(string, ValueConstants.DEFAULT_NONE)) {
             throw new BadRequestException(field + " not specified");
         }

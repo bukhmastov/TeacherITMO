@@ -1,5 +1,6 @@
-package com.bukhmastov.teacheritmo.controller;
+package com.bukhmastov.teacheritmo.controller.v1;
 
+import com.bukhmastov.teacheritmo.controller.BaseController;
 import com.bukhmastov.teacheritmo.dict.EnSource;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
 import com.bukhmastov.teacheritmo.model.ResponseSuccess;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
+@RequestMapping("/v1")
 public class TeacherController extends BaseController {
 
     @GetMapping(path = "/teachers/{name}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -33,8 +35,8 @@ public class TeacherController extends BaseController {
     }
 
     @PostMapping(path = "/teacher/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<ResponseSuccess> createReview(@RequestBody Teacher teacher) {
-        log.debug("createReview(teacher={})", teacher);
+    public ResponseEntity<ResponseSuccess> createTeacher(@RequestBody Teacher teacher) {
+        log.debug("createTeacher(teacher={})", teacher);
         if (teacher == null) {
             throw new BadRequestException("Teacher not specified");
         }

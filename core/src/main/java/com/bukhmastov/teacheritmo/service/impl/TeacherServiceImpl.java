@@ -79,7 +79,7 @@ public class TeacherServiceImpl implements TeacherService {
             return response;
         }
 
-        if (isBlocked()) {
+        if (source == EnSource.EXTERNAL && isBlocked()) {
             return Response.error(new TooManyRequestsException("Too many requests for teacher create action. " +
                     "Retry in " + config.data().getLockTeacherHours() + " hours."));
         }

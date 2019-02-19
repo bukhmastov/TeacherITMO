@@ -8,6 +8,7 @@ import com.bukhmastov.teacheritmo.exception.FailedDependencyException;
 import com.bukhmastov.teacheritmo.exception.BadRequestException;
 import com.bukhmastov.teacheritmo.exception.TooManyRequestsException;
 import com.bukhmastov.teacheritmo.model.Review;
+import com.bukhmastov.teacheritmo.model.ReviewCriteria;
 import com.bukhmastov.teacheritmo.model.ReviewList;
 import com.bukhmastov.teacheritmo.model.ReviewLock;
 import com.bukhmastov.teacheritmo.model.ReviewSummary;
@@ -158,7 +159,6 @@ public class ReviewServiceImpl implements ReviewService {
         reviewSummary.setCriteria5(criteria5.get());
         reviewSummary.setComments(comments);
         reviewSummary.setCommentsSize(comments.size());
-        reviewSummary.setTotal(reviews.size());
         return reviewSummary;
     }
 
@@ -172,8 +172,9 @@ public class ReviewServiceImpl implements ReviewService {
     private class AverageValue {
         private double sum = 0.0;
         private double count = 0.0;
-        private Double get() {
-            return count == 0.0 ? null : sum / count;
+        private ReviewCriteria get() {
+            Double value = count == 0.0 ? null : sum / count;
+            return new ReviewCriteria(value, (long) count);
         }
     }
 
